@@ -1,122 +1,31 @@
-// FILE: lib/canvas/editor_canvas.dart
+// FILE: lib/core/model/node.dart
 
-import 'package:flutter/material.dart';
-import '../core/model/node.dart';
-import '../core/engine/editor_controller.dart';
+import 'dart:ui';
 
-class EditorCanvas extends StatefulWidget {
-  final String activeTool;
+enum NodeType { shape, text, path, component }
 
-  const EditorCanvas({super.key, required this.activeTool});
+class Node {
+  String id;
+  NodeType type;
 
-  @override
-  State<EditorCanvas> createState() => _EditorCanvasState();
-}
+  Offset position;
+  double size;
 
-class _EditorCanvasState extends State<EditorCanvas> {
-  final controller = EditorController();
+  String? text;
+  Path? path;
 
-  Offset offset = Offset.zero;
-  double zoom = 1;
+  Color fill;
 
-  @override
-  void initState() {
-    super.initState();
+  bool selected;
 
-    controller.add(
-      Node(
-        id: "root",
-        type: NodeType.shape,
-        position: const Offset(300, 300),
-      ),
-    );
-  }
-
-  Node? hitTest(Offset p) {
-    for (final n in controller.nodes.reversed) {
-      final r = Rect.fromCenter(
-        center: n.position,
-        width: n.size,
-        height: n.size,
-      );
-
-      if (r.contains(p)) return n;
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (d) {
-        controller.select(hitTest(d.localPosition));
-        setState(() {});
-      },
-
-      onPanUpdate: (d) {
-        if (controller.selected != null) {
-          controller.move(controller.selected!, d.delta / zoom);
-        } else {
-          setState(() => offset += d.delta);
-        }
-      },
-
-      child: Transform.translate(
-        offset: offset,
-        child: Transform.scale(
-          scale: zoom,
-          child: CustomPaint(
-            size: Size.infinite,
-            painter: EditorPainter(controller.nodes),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class EditorPainter extends CustomPainter {
-  final List<Node> nodes;
-
-  EditorPainter(this.nodes);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final n in nodes) {
-      final paint = Paint()
-        ..color = n.fill
-        ..style = PaintingStyle.fill;
-
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: n.position,
-            width: n.size,
-            height: n.size,
-          ),
-          const Radius.circular(12),
-        ),
-        paint,
-      );
-
-      if (n.selected) {
-        final border = Paint()
-          ..color = Colors.blue
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
-
-        canvas.drawRect(
-          Rect.fromCenter(
-            center: n.position,
-            width: n.size + 10,
-            height: n.size + 10,
-          ),
-          border,
-        );
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  Node({
+    required this.id,
+    required this.type,
+    required this.position,
+    this.size = 120,
+    this.text,
+    this.path,
+    this.fill = const Color(0xff8d6e63),
+    this.selected = false,
+  });
 }
