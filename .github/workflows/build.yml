@@ -1,23 +1,23 @@
-name: Build Python Project
+name: Build Flutter APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: subosito/flutter-action@v2
         with:
-          python-version: "3.11"
+          flutter-version: '3.19.0'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - run: flutter pub get
+      - run: flutter build apk --release
 
-      - name: Run build/test
-        run: python -m compileall .
+      - uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
