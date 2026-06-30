@@ -36,8 +36,8 @@ class _EditorCanvasState extends State<EditorCanvas> {
     for (final n in controller.nodes.reversed) {
       final r = Rect.fromCenter(
         center: n.position,
-        width: n.size,
-        height: n.size,
+        width: n.width,
+        height: n.height,
       );
 
       if (r.contains(p)) return n;
@@ -91,8 +91,8 @@ class EditorPainter extends CustomPainter {
         RRect.fromRectAndRadius(
           Rect.fromCenter(
             center: n.position,
-            width: n.size,
-            height: n.size,
+            width: n.width,
+            height: n.height,
           ),
           const Radius.circular(12),
         ),
@@ -108,8 +108,8 @@ class EditorPainter extends CustomPainter {
         canvas.drawRect(
           Rect.fromCenter(
             center: n.position,
-            width: n.size + 10,
-            height: n.size + 10,
+            width: n.width + 10,
+            height: n.height + 10,
           ),
           border,
         );
