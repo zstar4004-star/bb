@@ -9,8 +9,8 @@ class FileIO {
         "id": n.id,
         "x": n.position.dx,
         "y": n.position.dy,
-        "size": n.size,
-        "type": n.type.name,
+        "w": n.width,
+        "h": n.height,
       }).toList()
     };
   }
