@@ -9,7 +9,9 @@ class Node {
   NodeType type;
 
   Offset position;
-  double size;
+
+  double width;
+  double height;
 
   String? text;
   Path? path;
@@ -22,7 +24,8 @@ class Node {
     required this.id,
     required this.type,
     required this.position,
-    this.size = 120,
+    this.width = 120,
+    this.height = 120,
     this.text,
     this.path,
     this.fill = const Color(0xff8d6e63),
